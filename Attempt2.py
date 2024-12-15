@@ -57,20 +57,20 @@ def load_images(directory, label):
 
 def loadXY_Data(wildfireDir, hurricaneDir, earthquakeDir, noDamageDir):
 	img_data = []
-	print("Loading wildfire images...")
+	print("\tLoading wildfire images...")
 	img_data.extend(load_images(wildfireDir, 0))
-	print("Loading hurricane images...")
+	print("\tLoading hurricane images...")
 	img_data.extend(load_images(hurricaneDir, 1))
-	print("Loading earthquake images...")
+	print("\tLoading earthquake images...")
 	img_data.extend(load_images(earthquakeDir, 2))
-	print("Loading no_damage images...")
+	print("\tLoading no_damage images...")
 	for i in range(3):
 		img_data.extend(load_images(noDamageDir + '/' + no_damage_subs[i], 3))
 	# Shuffle data
-	print("Shuffling data...")
+	print("\tShuffling data...")
 	random.shuffle(img_data)
 	# the data apparently needs to be in two numpy arrays
-	print("Converting data to numpy arrays...")
+	print("\tConverting data to numpy arrays...")
 	x = []
 	y_t = []
 	for features, labels in img_data:
@@ -81,7 +81,7 @@ def loadXY_Data(wildfireDir, hurricaneDir, earthquakeDir, noDamageDir):
 	y_ret = np.array(y_t)
 	
 	# Normalize the data
-	print("Normalizing data...")
+	print("\tNormalizing data...")
 	for i in range(len(x_ret)):
 		x_ret[i] = x_ret[i] / 255.0
 	
@@ -97,7 +97,6 @@ x_val, y_val = loadXY_Data(val_wildfire_dir, val_hurricane_dir, val_earthquake_d
 # create test set
 print("Creating test set...")
 x_test, y_test = loadXY_Data(test_wildfire_dir, test_hurricane_dir, test_earthquake_dir, test_no_damage_dir)
-
 
 # Completed loading training and validation data
 print("Completed loading training and validation data")
