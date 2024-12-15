@@ -29,7 +29,7 @@ val_no_damage_dir = 'data/validate/no_damage'
 test_wildfire_dir = 'data/test/damage/wildfire'
 test_hurricane_dir = 'data/test/damage/hurricane'
 test_earthquake_dir = 'data/test/damage/earthquake'
-test_no_damage_dir = 'data/test/no_damage/earthquake'
+test_no_damage_dir = 'data/test/no_damage'
 no_damage_subs = ['earthquake', 'hurricane', 'wildfire']
 
 image_height = 100
