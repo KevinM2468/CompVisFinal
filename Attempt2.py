@@ -125,7 +125,7 @@ model.add(Dense(4, activation = 'softmax'))
 model.compile(loss = 'sparse_categorical_crossentropy', optimizer = 'adam', metrics = ['accuracy'])
 model.summary()
 
-history = model.fit(x_train, y_train, validation_data = (x_val, y_val), epochs = 7)
+history = model.fit(x_train, y_train, validation_data = (x_val, y_val), epochs = 8)
 
 # Save the model
 timestampString = 'model' + str(int(time.time()))
