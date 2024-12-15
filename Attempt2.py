@@ -5,8 +5,11 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import cv2
 import random
+
+import tensorflow.python.keras.engine.base_layer_utils
 from sklearn.model_selection import train_test_split
 from tensorflow.python.keras.models import Sequential
+_tf_uses_legacy_keras = True
 # TODO. BatchNormalization is not available in the version of tensorflow I have
 # I don't think it's important for the model, it doesn't seem to be used in the original code
 from tensorflow.python.keras.layers import Conv2D, MaxPooling2D, AveragePooling2D, Flatten, Dense, Dropout #, BatchNormalization
@@ -54,69 +57,44 @@ def load_images(directory, label):
 	return ret_data
 
 
-print("Loading images...")
-print("Loading wildfire images...")
-img_data.extend(load_images(train_wildfire_dir, 0))
-print("Loading hurricane images...")
-img_data.extend(load_images(train_hurricane_dir, 1))
-print("Loading earthquake images...")
-img_data.extend(load_images(train_earthquake_dir, 2))
-print("Loading no_damage images...")
-for i in range(3):
-	img_data.extend(load_images(train_no_damage_dir_root + '/' + no_damage_subs[i], 3))
+def loadXY_Data(wildfireDir, hurricaneDir, earthquakeDir, noDamageDir):
+	print("Loading wildfire images...")
+	img_data.extend(load_images(wildfireDir, 0))
+	print("Loading hurricane images...")
+	img_data.extend(load_images(hurricaneDir, 1))
+	print("Loading earthquake images...")
+	img_data.extend(load_images(earthquakeDir, 2))
+	print("Loading no_damage images...")
+	for i in range(3):
+		img_data.extend(load_images(noDamageDir + '/' + no_damage_subs[i], 3))
+	# Shuffle data
+	print("Shuffling data...")
+	random.shuffle(img_data)
+	# the data apparently needs to be in two numpy arrays
+	print("Converting data to numpy arrays...")
+	nx = []
+	ny_t = []
+	for nfeatures, nlabels in img_data:
+		nx.append(nfeatures)
+		ny_t.append(nlabels)
+	# Convert X and Y list into array
+	x_ret = np.array(nx, dtype=float)
+	y_ret = np.array(ny_t)
+	
+	# Normalize the data
+	print("Normalizing data...")
+	for ni in range(len(x_ret)):
+		x_ret[ni] = x_ret[ni] / 255.0
+	
+	return x_ret, y_ret
 
-# Shuffle data
-print("Shuffling data...")
-random.shuffle(img_data)
 
-# the data apparently needs to be in two numpy arrays
-print("Converting data to numpy arrays...")
-x = []
-y_t = []
-for features, labels in img_data:
-	x.append(features)
-	y_t.append(labels)
-
-# Convert X and Y list into array
-x_train = np.array(x, dtype=float)
-y_train = np.array(y_t)
-
-# Normalize the data
-print("Normalizing data...")
-for i in range(len(x_train)):
-	x_train[i] = x_train[i] / 255.0
-
+# Load training data
+print("Loading training data...")
+x_train,y_train = loadXY_Data(train_wildfire_dir, train_hurricane_dir, train_earthquake_dir, train_no_damage_dir_root)
 # create validation set
 print("Creating validation set...")
-
-# Load images
-img_data = []
-
-print("Loading wildfire images...")
-img_data.extend(load_images(val_wildfire_dir, 0))
-print("Loading hurricane images...")
-img_data.extend(load_images(val_hurricane_dir, 1))
-print("Loading earthquake images...")
-img_data.extend(load_images(val_earthquake_dir, 2))
-print("Loading no_damage images...")
-for i in range(3):
-	img_data.extend(load_images(val_no_damage_dir + '/' + no_damage_subs[i], 3))
-
-# Shuffle data
-print("Shuffling data...")
-random.shuffle(img_data)
-
-# the data apparently needs to be in two numpy arrays
-print("Converting data to numpy arrays...")
-x = []
-y_t = []
-for features, labels in img_data:
-	x.append(features)
-	y_t.append(labels)
-
-# Convert X and Y list into array
-x_val = np.array(x, dtype=float)
-y_val = np.array(y_t)
+x_val, y_val = loadXY_Data(val_wildfire_dir, val_hurricane_dir, val_earthquake_dir, val_no_damage_dir)
 
 # Completed loading training and validation data
 print("Completed loading training and validation data")
@@ -141,6 +119,7 @@ model.add(Dense(2000, activation = 'relu'))
 model.add(Dropout(0.2))
 model.add(Dense(4, activation = 'sigmoid'))
 
+model.compile(loss = 'binary_crossentropy', optimizer = 'adam', metrics = ['accuracy'])
 model.summary()
 
 history = model.fit(x_train, y_train, validation_data = (x_val, y_val), epochs = 1)
