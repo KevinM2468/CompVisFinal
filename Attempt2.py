@@ -37,8 +37,6 @@ image_width = 100
 
 categories = ['wildfire', 'hurricane', 'earthquake', 'no_damage']
 
-img_data = []
-
 
 # I hate python not allowing out of order function calls
 def load_images(directory, label):
@@ -58,6 +56,7 @@ def load_images(directory, label):
 
 
 def loadXY_Data(wildfireDir, hurricaneDir, earthquakeDir, noDamageDir):
+	img_data = []
 	print("Loading wildfire images...")
 	img_data.extend(load_images(wildfireDir, 0))
 	print("Loading hurricane images...")
@@ -72,19 +71,19 @@ def loadXY_Data(wildfireDir, hurricaneDir, earthquakeDir, noDamageDir):
 	random.shuffle(img_data)
 	# the data apparently needs to be in two numpy arrays
 	print("Converting data to numpy arrays...")
-	nx = []
-	ny_t = []
-	for nfeatures, nlabels in img_data:
-		nx.append(nfeatures)
-		ny_t.append(nlabels)
+	x = []
+	y_t = []
+	for features, labels in img_data:
+		x.append(features)
+		y_t.append(labels)
 	# Convert X and Y list into array
-	x_ret = np.array(nx, dtype=float)
-	y_ret = np.array(ny_t)
+	x_ret = np.array(x, dtype=float)
+	y_ret = np.array(y_t)
 	
 	# Normalize the data
 	print("Normalizing data...")
-	for ni in range(len(x_ret)):
-		x_ret[ni] = x_ret[ni] / 255.0
+	for i in range(len(x_ret)):
+		x_ret[i] = x_ret[i] / 255.0
 	
 	return x_ret, y_ret
 
