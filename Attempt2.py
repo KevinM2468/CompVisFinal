@@ -126,9 +126,6 @@ model.summary()
 
 history = model.fit(x_train, y_train, validation_data = (x_val, y_val), epochs = 8)
 
-# Save the model
-timestampString = 'model' + str(int(time.time()))
-model.save(timestampString+'.h5')
 
 plt.xlabel('Epochs')
 plt.ylabel('Accuracy')
@@ -156,3 +153,8 @@ plt.plot(history.history['loss'], label = 'Train Loss')
 plt.plot(history.history['val_loss'], label = 'Val Loss')
 plt.grid()
 plt.legend(loc = 'best')
+
+
+# Save the model
+timestampString = 'model' + str(int(time.time()))
+model.save(timestampString+'.h5')
