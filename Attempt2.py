@@ -94,6 +94,10 @@ x_train,y_train = loadXY_Data(train_wildfire_dir, train_hurricane_dir, train_ear
 # create validation set
 print("Creating validation set...")
 x_val, y_val = loadXY_Data(val_wildfire_dir, val_hurricane_dir, val_earthquake_dir, val_no_damage_dir)
+# create test set
+print("Creating test set...")
+x_test, y_test = loadXY_Data(test_wildfire_dir, test_hurricane_dir, test_earthquake_dir, test_no_damage_dir)
+
 
 # Completed loading training and validation data
 print("Completed loading training and validation data")
@@ -121,7 +125,7 @@ model.add(Dense(4, activation = 'softmax'))
 model.compile(loss = 'sparse_categorical_crossentropy', optimizer = 'adam', metrics = ['accuracy'])
 model.summary()
 
-history = model.fit(x_train, y_train, validation_data = (x_val, y_val), epochs = 1)
+history = model.fit(x_train, y_train, validation_data = (x_val, y_val), epochs = 7)
 
 # Save the model
 timestampString = 'model' + str(int(time.time()))
@@ -131,5 +135,25 @@ plt.xlabel('Epochs')
 plt.ylabel('Accuracy')
 plt.plot(history.history['accuracy'], label = 'Train Accuracy')
 plt.plot(history.history['val_accuracy'], label = 'Val Accuracy')
+plt.grid()
+plt.legend(loc = 'best')
+
+plt.show()
+
+model.evaluate(x_test, y_test)
+
+plt.xlabel('Epochs')
+plt.ylabel('Accuracy')
+plt.plot(history.history['accuracy'], label = 'Train Accuracy')
+plt.plot(history.history['val_accuracy'], label = 'Val Accuracy')
+plt.grid()
+plt.legend(loc = 'best')
+
+plt.show()
+
+plt.xlabel('Epochs')
+plt.ylabel('Loss')
+plt.plot(history.history['loss'], label = 'Train Loss')
+plt.plot(history.history['val_loss'], label = 'Val Loss')
 plt.grid()
 plt.legend(loc = 'best')
