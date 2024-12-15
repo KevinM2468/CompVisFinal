@@ -116,9 +116,9 @@ model.add(Dense(3500, activation = 'relu'))
 model.add(Dropout(0.5))
 model.add(Dense(2000, activation = 'relu'))
 model.add(Dropout(0.2))
-model.add(Dense(4, activation = 'sigmoid'))
+model.add(Dense(4, activation = 'softmax'))
 
-model.compile(loss = 'binary_crossentropy', optimizer = 'adam', metrics = ['accuracy'])
+model.compile(loss = 'sparse_categorical_crossentropy', optimizer = 'adam', metrics = ['accuracy'])
 model.summary()
 
 history = model.fit(x_train, y_train, validation_data = (x_val, y_val), epochs = 1)
